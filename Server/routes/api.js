@@ -1,21 +1,49 @@
 const express = require("express");
 const router = express.Router();
-const Todo = require("../model/todo");
+const Book = require("../model/book");
 
-router.get("/gettodos", (req, res, next) => {
-  Todo.find({}, (err, result) => {
+// create,  read, update and delete books
+
+// get all books
+router.get("/getbooks", (req, res, next) => {
+  Book.find({}, (err, result) => {
     if (err) return next(err);
     res.status(200).json(result);
   });
 });
 
-router.post("/posttodos", (req, res, next) => {
-  console.log(req.body);
-  var newTodo = new Todo(req.body);
-  newTodo.save((err, result) => {
+//  create a book in mongoose
+router.post("/postbook", (req, res, next) => {
+  // console.log(req.body);
+  var newBook = new Book(req.body);
+  newBook.save((err, result) => {
     if (err) {
       return next(err);
     }
+    res.status(200).json(result);
+  });
+});
+
+// update a book
+router.put("/updatebook", (req, res, next) => {
+  // using findOneAndUpdate instead of updateone because we want the update document to return
+  // we use new:true so that new updated object will be returned
+  Book.findOneAndUpdate(
+    { _id: req.body._id },
+    req.body,
+    { new: true },
+    (err, result) => {
+      if (err) return next(err);
+      res.status(200).json(result);
+    }
+  );
+});
+
+//delete a book
+router.delete("/deletebook", (req, res, next) => {
+  // console.log(req.body);
+  Book.findOneAndDelete({ _id: req.body._id }, (err, result) => {
+    if (err) return next(err);
     res.status(200).json(result);
   });
 });
