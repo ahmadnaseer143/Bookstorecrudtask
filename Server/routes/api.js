@@ -28,6 +28,7 @@ router.post("/postbook", (req, res, next) => {
 router.put("/updatebook", (req, res, next) => {
   // using findOneAndUpdate instead of updateone because we want the update document to return
   // we use new:true so that new updated object will be returned
+  // console.log(req.body);
   Book.findOneAndUpdate(
     { _id: req.body._id },
     req.body,
@@ -40,9 +41,8 @@ router.put("/updatebook", (req, res, next) => {
 });
 
 //delete a book
-router.delete("/deletebook", (req, res, next) => {
-  // console.log(req.body);
-  Book.findOneAndDelete({ _id: req.body._id }, (err, result) => {
+router.delete("/deletebook/:_id", (req, res, next) => {
+  Book.findOneAndDelete({ _id: req.params._id }, (err, result) => {
     if (err) return next(err);
     res.status(200).json(result);
   });
